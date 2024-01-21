@@ -1,12 +1,19 @@
 use std::io;
+use reqwest::blocking::{Client, ClientBuilder};
+
 fn main() {
-    println!("Guess the number!");
-    println!("Please input your guess.");
+    let http_client = Client::new();
+    let result = http_client.get("http://localhost/tikmais-pdv-web/public/api/app/evento")
+        .send();
 
-    let mut gess = String::new();
-    io::stdin()
-        .read_line(&mut gess)
-        .expect("Failed to read line");
-
-    println!("You guessed: {gess}");
+    if result.is_ok() {
+        println!("Body: {:#?}", result.ok().unwrap().text().unwrap());
+        // let response = result.unwrap();
+        // let status = response.status();
+        // let body = response.text().unwrap();
+        // println!("Status: {}", status);
+        // println!("Body: {}", body);
+    } else {
+        println!("Error: {:?}", result.err());
+    }
 }
